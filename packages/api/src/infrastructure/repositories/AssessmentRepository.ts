@@ -12,7 +12,8 @@ export class AssessmentRepository implements IAssessmentRepository {
 
   public async findAll(): Promise<AssessmentType[]> {
     // TODO: Implement Find All
-    return Promise.reject(new Error(`Not implemented`));
+    const assessments = await Assessment.findAll();
+    return assessments.map((a) => a.get({ plain: true }) as AssessmentType);
   }
 
   public async delete(id: number): Promise<boolean> {
