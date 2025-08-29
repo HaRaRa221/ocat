@@ -5,9 +5,15 @@ import { Assessment } from '../sequelize/models';
 export class AssessmentRepository implements IAssessmentRepository {
   public async create(assessmentData: CreateAssessmentDTO): Promise<AssessmentType> {
     // TODO: Implement Create
-
-    const created = await Assessment.create(assessmentData);
-    return created.get({ plain: true }) as AssessmentType;
+    console.log(assessmentData);
+    const assessment = await Assessment.create({
+      catDateOfBirth: assessmentData.catDateOfBirth,
+      catName: assessmentData.catName,
+      instrumentType: assessmentData.instrumentType,
+      riskLevel: assessmentData.riskLevel,
+      score: assessmentData.score,
+    });
+    return assessment.get({ plain: true }) as AssessmentType;
   }
 
   public async findAll(): Promise<AssessmentType[]> {

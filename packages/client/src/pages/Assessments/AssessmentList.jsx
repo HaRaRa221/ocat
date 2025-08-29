@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTable } from 'react-table';
-import { flexRender } from '@tanstack/react-table';
+import {
+  useReactTable,
+} from '@tanstack/react-table';
 import { AssessmentService } from '../../services/AssessmentService';
 
 export const AssessmentList = () => {
@@ -15,47 +17,69 @@ export const AssessmentList = () => {
   }, []);
   console.log(assessments);
 
-  const columns = React.useMemo(() => {
-    if (assessments.length === 0) {
-      return [];
-    }
-    return Object.keys(assessments[0]).map((key) => ({
-      accessor: key,
-      Header: key.charAt(0).toUpperCase() + key.slice(1),
-    }));
-  }, [ assessments ]);
-
+  const columns = React.useMemo(
+    () => [
+      {
+        accessor: `id`,
+        Header: `ID`,
+      },
+      {
+        accessor: `catName`,
+        Header: `Cat Name`,
+      },
+      {
+        accessor: `catDateOfBirth`,
+        Header: `Cat Date of Birth`,
+      },
+      {
+        accessor: `instrumentType`,
+        Header: `Instrument Type`,
+      },
+      {
+        accessor: `riskLevel`,
+        Header: `Risk Level`,
+      },
+      {
+        accessor: `score`,
+        Header: `Score`,
+      },
+    ],
+    [],
+  );
   const data = React.useMemo(() => assessments, [ assessments ]);
 
   const tableInstance = useTable({ columns, data });
 
   const {
+    getTableBodyProps,
     getTableProps,
     headerGroups,
     prepareRow,
     rows,
   } = tableInstance;
 
-  return <table {...getTableProps()} className="table">
-    <thead>
-      {headerGroups.map((headerGroup) =>
-        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-          {headerGroup.headers.map((column) =>
-            <th {...column.getHeaderProps()} key={column.id}>
-              {column.columnDef && flexRender(column.columnDef.header, column.getContext())}
-            </th>)}
-        </tr>)}
-    </thead>
-    <tbody>
-      {rows.map((row) => {
-        prepareRow(row);
-        return <tr {...row.getRowProps()} key={row.id}>
-          {row.cells.map((cell) =>
-            <td {...cell.getCellProps()} key={cell.id}>
-              {cell.columnDef && flexRender(cell.columnDef.cell, cell.getContext())}
-            </td>)}
-        </tr>;
-      })}
-    </tbody>
-  </table>;
+  return <div>
+    <table {...getTableProps()} className="table">
+      <thead>
+        {headerGroups.map((headerGroup) =>
+          <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+            {headerGroup.headers.map((column) =>
+              <th {...column.getHeaderProps()} key={column.id}>
+                {column.render(`Header`)}
+              </th>)}
+          </tr>)}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {rows.map((row) => {
+          prepareRow(row);
+          return <tr {...row.getRowProps()} key={row.id}>
+            {row.cells.map((cell) =>
+              <td {...cell.getCellProps()} key={cell.id}>
+                {cell.render(`Cell`)}
+              </td>)}
+          </tr>;
+        })}
+      </tbody>
+    </table>
+  </div>;
 };

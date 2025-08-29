@@ -3,30 +3,28 @@ import Axios from '../utils/http.config';
 export class AssessmentService {
   static submit(assessment) {
     try {
+      console.log(`service`, assessment);
       // TODO: Choose the correct method, url, and data to send
       // in a request to the express packages/api/src/routes/assessment.js
       // NOTE: the http.config file automatically adds /api to the front of your url
-      return Axios.post(`/assessments`, { assessment })
+      return Axios.post(`/assessments`, assessment)
         .then((response) => response.data);
     } catch (err) {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }
   }
 
-  static getList({ limit, page, status } = {}) {
+  static getList() {
     try {
       // TODO: Choose the correct method, url, and data to send
       // in a request to the express packages/api/src/routes/assessment.js
       // NOTE: the http.config file automatically adds /api to the front of your url
-      return Axios.get(`/assessment/list`, {
+      return Axios.get(`/assessments`, {
         params: {
-          limit,
-          page,
           // TODO: Add any query parameters here for filtering, pagination, etc.
-          status,
         },
       })
-        .then((response) => response.data.data.assessments);
+        .then((response) => response.data);
     } catch (err) {
       throw new Error(`${err.response.statusText} - ${err.response.data.message}`);
     }

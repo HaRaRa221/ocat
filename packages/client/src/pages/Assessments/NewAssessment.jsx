@@ -29,35 +29,55 @@ export const NewAssessment = () => {
     }
     return score;
   };
+  function getRiskLevel(riskScore) {
+    if (riskScore === 4 || riskScore === 5) {
+      return `high`;
+    }
+    if (riskScore === 2 || riskScore === 3) {
+      return `medium`;
+    }
+    return `low`;
+  };
   const onSubmit = async (data) => {
-    const calculatedScore = calScore(data); // Calculate score using submitted data
-    setScore(calculatedScore);
-    const payload = { ...data, score }; // Optionally include score in the payload
-    await AssessmentService.submit(payload);
-    alert(`Assessment submitted! Total Score: ${score}`);
+    data.instrumentType = `Cat`;
+    data.score = calScore(data); // Calculate score using submitted data
+    data.riskLevel = getRiskLevel(data.score);
+
+    // setScore(calculatedScore);
+    // const payload = { ...data, score: calculatedScore }; // Optionally include score in the payload
+
+    // await AssessmentService.submit(payload);
+    // alert(`Assessment submitted! Total Score: ${calculatedScore}`);
+
+    const allowedKey = [
+      `catDateOfBirth`,
+      `catName`,
+      `instrumentType`,
+      `riskLevel`,
+      `score`,
+    ];
+
+    const filtered = Object.fromEntries(
+      Object.entries(data).filter(([ key ]) => allowedKey.includes(key)),
+    );
+    console.log(`after filter`, data);
+    await AssessmentService.submit(filtered);
   };
 
   return <Form onSubmit={handleSubmit(onSubmit)}>
     <h3>Cat Behavioral Instruments</h3>
     <div>
       <label>
-        First Name:
-        <input {...register(`firstName`, { required: true })} placeholder="First Name" />
+        Cat Name:
+        <input {...register(`catName`, { required: true })} placeholder="Cat Name" />
       </label>
-      {errors.firstName && <span>This field is required</span>}
-    </div>
-    <div>
-      <label>
-        Last Name:
-        <input {...register(`lastName`, { required: true })} placeholder="Last Name" />
-      </label>
-      {errors.lastName && <span>This field is required</span>}
+      {errors.catName && <span>This field is required</span>}
     </div>
     <div>
       <label>
         Date of Birth (mm/dd/yyyy):
         <input
-          {...register(`dateOfBirth`, { required: true })}
+          {...register(`catDateOfBirth`, { required: true })}
           type="date"
           placeholder="Date of Birth (mm/dd/yyyy)"
         />
