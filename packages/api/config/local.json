@@ -1,7 +1,4 @@
 {
-  "server": {
-    "port": 5432
-  },
   "database": {
     "username": "postgres",
     "password": "postgres",
