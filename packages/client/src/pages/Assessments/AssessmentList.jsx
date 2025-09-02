@@ -43,6 +43,10 @@ export const AssessmentList = () => {
         accessor: `score`,
         Header: `Score`,
       },
+      {
+        accessor: `actions`,
+        Header: `Actions`,
+      },
     ],
     [],
   );
